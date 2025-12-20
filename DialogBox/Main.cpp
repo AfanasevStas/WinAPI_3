@@ -1,4 +1,4 @@
-#include<Windows.h>
+п»ї#include<Windows.h>
 #include"resource.h"
 
 BOOL CALLBACK DlgProc(HWND hwd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -30,7 +30,7 @@ BOOL CALLBACK DlgProc(HWND hwd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)sz_buffer);
 		}
 	    break;
-		case IDOK: MessageBox(hwd, "Была нажата кнопка OK", "Info", MB_OK | MB_ICONINFORMATION); break;
+		case IDOK: MessageBox(hwd, "Р‘С‹Р»Р° РЅР°Р¶Р°С‚Р° РєРЅРѕРїРєР° OK", "Info", MB_OK | MB_ICONINFORMATION); break;
 		case IDCANCEL: EndDialog(hwd, 0); break;
 		}
 		break;
