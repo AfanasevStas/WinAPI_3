@@ -1,6 +1,8 @@
 ﻿#include<Windows.h>
 #include"resource.h"
 
+CONST CHAR g_sz_INVITE[] = "Введите имя пользователя";
+
 BOOL CALLBACK DlgProc(HWND hwd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -14,12 +16,34 @@ BOOL CALLBACK DlgProc(HWND hwd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_INITDIALOG:
 	{
 		HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-		SendMessage(hwd, WM_SETICON, 0, (LPARAM)hIcon);
+		HWND hEditLogin = GetDlgItem(hwd, IDC_EDIT_LOGIN);
+		SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITE);
 	}
-		break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
+		case IDC_EDIT_LOGIN:
+		{
+			CONST INT SIZE = 256;
+			CHAR sz_buffer[SIZE] = {};
+			HWND hEditLogin = GetDlgItem(hwd, IDC_EDIT_LOGIN);
+			SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
+			if (HIWORD(wParam) == EN_SETFOCUS)
+			{
+				if (strcmp(sz_buffer, g_sz_INVITE) == 0)
+				{
+					SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)"");
+				}
+			}
+			if (HIWORD(wParam) == EN_KILLFOCUS)
+			{
+				if (strcmp(sz_buffer, "") == 0)
+				{
+					SendMessage(hEditLogin, WM_SETTEXT, 0, (LPARAM)g_sz_INVITE);
+				}
+			}
+		}
+		break;
 		case IDC_BUTTON_COPY:
 		{
 			CONST INT SIZE = 256;
@@ -29,7 +53,7 @@ BOOL CALLBACK DlgProc(HWND hwd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hEditLogin, WM_GETTEXT, SIZE, (LPARAM)sz_buffer);
 			SendMessage(hEditPassword, WM_SETTEXT, 0, (LPARAM)sz_buffer);
 		}
-	    break;
+		break;
 		case IDOK: MessageBox(hwd, "Была нажата кнопка OK", "Info", MB_OK | MB_ICONINFORMATION); break;
 		case IDCANCEL: EndDialog(hwd, 0); break;
 		}
