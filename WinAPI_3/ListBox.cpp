@@ -34,7 +34,7 @@ BOOL CALLBACK DlgProc_2(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(hList, WM_GETTEXT, MAX_PATH, (LPARAM)tExt);
 			HWND hParent = GetParent(hwnd);
 			HWND hLisT = GetDlgItem(hParent, IDC_LIST);
-			SendMessage(hLisT, LB_ADDSTRING, 0, (LPARAM)tExt);
+			//SendMessage(hLisT, LB_ADDSTRING, 0, (LPARAM)tExt);
 			if (SendMessage(hLisT, LB_FINDSTRINGEXACT, 0, (LPARAM)tExt) == LB_ERR)
 				SendMessage(hLisT, LB_ADDSTRING, 0, (LPARAM)tExt);
 			else
