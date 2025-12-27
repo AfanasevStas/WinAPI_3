@@ -1,42 +1,61 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include<Windows.h>
 #include"resource.h"
+#include"resource1.h"
 #include<stdio.h>
 CONST CHAR* g_sz_VALUES[] = {"This", "is","my","List","Box"};
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-//BOOL CALLBACK DlgProc_2(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK DlgProc_2(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
 	DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_DIALOG), NULL, (DLGPROC)DlgProc, 0);
-	//DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_DIALOG2), NULL, (DLGPROC)DlgProc_2, 0);
+	//DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, (DLGPROC)DlgProc_2, 0);
 	return 0;
 }
-//BOOL CALLBACK DlgProc_2(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-//{
-//	switch (uMsg)
-//	{
-//	case WM_INITDIALOG:
-//	{
-//
-//	}
-//	break;
-//	case WM_COMMAND:
-//	{
-//		switch (LOWORD(wParam))
-//		{
-//		case IDCANCEL: EndDialog(hwnd, 0); break;
-//		}
-//	}
-//	break;
-//	case WM_CLOSE:
-//	{
-//		EndDialog(hwnd, 0);
-//	}
-//	break;
-//	}
-//	return FALSE;
-//}
+BOOL CALLBACK DlgProc_2(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+	{
+		SetFocus(GetDlgItem(hwnd, IDC_EDIT1));
+		break;
+	}
+	break;
+	case WM_COMMAND:
+	{
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+		{
+			HWND hList = GetDlgItem(hwnd, IDC_EDIT1);
+			CHAR tExt[MAX_PATH] = {};
+			SendMessage(hList, WM_GETTEXT, MAX_PATH, (LPARAM)tExt);
+			HWND hParent = GetParent(hwnd);
+			HWND hLisT = GetDlgItem(hParent, IDC_LIST);
+			SendMessage(hLisT, LB_ADDSTRING, 0, (LPARAM)tExt);
+			if (SendMessage(hLisT, LB_FINDSTRINGEXACT, 0, (LPARAM)tExt) == LB_ERR)
+				SendMessage(hLisT, LB_ADDSTRING, 0, (LPARAM)tExt);
+			else
+			{
+				MessageBox(hwnd, "Такой элемент уже добавлен", "Info", MB_OK | MB_ICONINFORMATION);
+				break;
+			}
+		}
+
+		case IDCANCEL: EndDialog(hwnd, 0); break;
+		}
+	}
+	break;
+	case WM_CLOSE:
+	{
+		EndDialog(hwnd, 0);
+	}
+	break;
+	}
+	return FALSE;
+}
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
@@ -77,7 +96,9 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case IDC_BUTTON1:
 		{
 			HWND hList = GetDlgItem(hwnd, IDC_LIST);
-			CHAR tExt[256];
+			CHAR tExt[MAX_PATH] = {};
+			DialogBoxParam(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, (DLGPROC)DlgProc_2, 0);
+
 		}
 		break;
 		case IDC_BUTTON2:

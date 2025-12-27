@@ -2,8 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by Resource1.rc
 //
-#define IDD_DIALOG1                     101
 #define IDD_DIALOG2                     101
+#define IDD_DIALOG1                     101
 #define IDC_EDIT1                       1001
 
 // Next default values for new objects
