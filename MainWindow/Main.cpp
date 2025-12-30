@@ -64,6 +64,47 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	switch (uMsg)
 	{
 	case WM_CREATE:
+	{
+		HWND hStatic = CreateWindowEx
+		(
+			NULL,
+			"Static",
+			"Этот текст создан функцией CreateWindowEx()",
+			WS_CHILD | WS_VISIBLE,
+			10, 10,
+			500, 25,
+			hwnd,
+			(HMENU)1000,
+			GetModuleHandle(NULL),
+			NULL
+		);
+		HWND hEdit = CreateWindowEx
+		(
+			NULL,
+			"Edit",
+			"",
+			WS_CHILD | WS_VISIBLE | WS_BORDER,
+			10, 40,
+			500, 22,
+			hwnd,
+			(HMENU)1001,
+			GetModuleHandle(NULL),
+			NULL
+		);
+		CreateWindowEx
+		(
+			NULL,
+			"Button",
+			"Применить",
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			410,70,
+			100,25,
+			hwnd,
+			(HMENU)1002,
+			GetModuleHandle(NULL),
+			NULL
+		);
+	}
 		break;
 	case WM_SIZE:
 	case WM_MOVE:
@@ -76,10 +117,15 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 	case WM_COMMAND:
-		switch (uMsg)
+		switch (LOWORD(wParam))
 		{
-		case IDCANCEL: DestroyWindow(hwnd); break;
-
+		case 1002: 
+			CHAR sz_buffer[MAX_PATH] = {};
+			HWND hStatic = GetDlgItem(hwnd, 1000);
+			HWND hEdit = GetDlgItem(hwnd, 1001);
+			SendMessage(hEdit, WM_GETTEXT, MAX_PATH, (LPARAM)sz_buffer);
+			SendMessage(hStatic, WM_SETTEXT, 0, (LPARAM)sz_buffer);
+			
 		}
 		break;
 	case WM_DESTROY:
