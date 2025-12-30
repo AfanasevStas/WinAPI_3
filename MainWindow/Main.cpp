@@ -5,8 +5,8 @@
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 DOUBLE nWidth = 75 * (GetSystemMetrics(SM_CXSCREEN) / 100);
 DOUBLE nHeight = 75 * (GetSystemMetrics(SM_CYSCREEN) / 100);
-INT xPos = CW_USEDEFAULT;
-INT yPos = CW_USEDEFAULT;
+INT xPos = GetSystemMetrics(SM_CXSCREEN) / 8;
+INT yPos = GetSystemMetrics(SM_CYSCREEN) / 8;
 
 CHAR g_SZ_CLASS_NAME[256] = {};
 
@@ -33,18 +33,18 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 		return 0;
 	}
 	HWND hwnd = CreateWindowEx
-		(
-			NULL,
-			g_SZ_CLASS_NAME,
-			g_SZ_CLASS_NAME,
-			WS_OVERLAPPEDWINDOW,
-			xPos, yPos,
-			nWidth, nHeight,
-			NULL,
-			NULL,
-			hInstance,
-			NULL
-		);
+	(
+		NULL,
+		g_SZ_CLASS_NAME,
+		g_SZ_CLASS_NAME,
+		WS_OVERLAPPEDWINDOW,
+		xPos, yPos,
+		nWidth, nHeight,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
 	if (hwnd == NULL)
 	{
 		MessageBox(NULL, "Window create failed", NULL, MB_OK | MB_ICONERROR);
@@ -52,7 +52,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 	}
 	ShowWindow(hwnd, nCmdShow);
 	MSG msg;
-	while (GetMessage(&msg, NULL,0,0) > 0)
+	while (GetMessage(&msg, NULL, 0, 0) > 0)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -65,26 +65,25 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		break;
+	case WM_SIZE:
+	case WM_MOVE:
+	{
+		INT xPos = { (int)LOWORD(lParam) };
+		INT yPos = { (int)HIWORD(lParam) };
+		ZeroMemory(&g_SZ_CLASS_NAME, 256);
+		sprintf(g_SZ_CLASS_NAME, "Main Window PV_522           Ширина: %f, Высота: %f, X: %d, Y: %d", nWidth, nHeight, xPos, yPos);
+		SendMessage(hwnd, WM_SETTEXT, 0, (LPARAM)g_SZ_CLASS_NAME);
+	}
+	break;
 	case WM_COMMAND:
 		switch (uMsg)
 		{
-		case WM_MOVE:
-		{
-			INT xPos = { (int)LOWORD(lParam) };
-			INT yPos = { (int)HIWORD(lParam) };
-			for (int i = 0; i < 256; i++)
-			{
-				g_SZ_CLASS_NAME[i] = 0;
-			}
-			sprintf(g_SZ_CLASS_NAME, "Main Window PV_522           Ширина: %f, Высота: %f, X: %d, Y: %d", nWidth, nHeight, xPos, yPos);
-		}
-		break;
 		case IDCANCEL: DestroyWindow(hwnd); break;
-		
+
 		}
 		break;
 	case WM_DESTROY:
-		DestroyWindow(hwnd);
+		PostQuitMessage(0);
 		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
