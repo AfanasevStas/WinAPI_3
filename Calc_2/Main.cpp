@@ -226,10 +226,55 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SendMessage(GetDlgItem(hwnd, wParam - VK_NUMPAD0 + IDC_BUTTON_0), BM_SETSTATE, TRUE, NULL);
 		}
+		//ÌÎ¨ 
+		if (GetKeyState(VK_SHIFT) > 0 && wParam == VK_OEM_PLUS)
+		{
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, TRUE, 0);
+		}
+		if (GetKeyState(VK_SHIFT) < 0 && wParam == VK_OEM_PLUS)
+		{
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0);
+		}
 		switch (wParam)
 		{
-		case VK_OEM_PLUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0); break;
 		case VK_OEM_MINUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
+		//ÌÎ¨ 
+		case VK_ESCAPE:
+		{
+			CHAR sz_display[MAX_PATH] = {};
+			HWND hEditDisplay = GetDlgItem(hwnd, IDC_DISPLAY);
+			INT c = 0;
+			sprintf(sz_display, "%d", c);
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_CLR), BM_SETSTATE, TRUE, 0);
+			SendMessage(hEditDisplay, WM_SETTEXT, MAX_PATH, (LPARAM)sz_display);
+		}
+		break;
+		case VK_BACK:
+		{
+			CHAR sz_display[MAX_PATH] = {};
+			HWND hEditDisplay = GetDlgItem(hwnd, IDC_DISPLAY);
+			INT cHeck = 0;
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_BSP), BM_SETSTATE, TRUE, 0); 
+			SendMessage(hEditDisplay, WM_GETTEXT, MAX_PATH, (LPARAM)sz_display);
+			for (int i = 0; i < MAX_PATH; i++)
+			{
+				if (sz_display[i] != NULL)
+				{
+					cHeck++;
+				}
+			}
+			sz_display[cHeck - 1] = NULL;
+			SendMessage(hEditDisplay, WM_SETTEXT, MAX_PATH, (LPARAM)sz_display);
+		}
+		break;
+		case VK_OEM_2:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_SLASH), BM_SETSTATE, TRUE, 0); break;
+		case VK_OEM_PERIOD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, TRUE, 0); break;
+		case VK_MULTIPLY:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, TRUE, 0); break;
+		case VK_ADD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0); break;
+		case VK_SUBTRACT:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
+		case VK_DIVIDE:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_SLASH), BM_SETSTATE, TRUE, 0); break;
+		case VK_DELETE:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, TRUE, 0); break;
+
 			//case VK_OEM_MINUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
 		}
 	}
@@ -248,9 +293,32 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SendMessage(GetDlgItem(hwnd, wParam - VK_NUMPAD0 + IDC_BUTTON_0), BM_SETSTATE, FALSE, NULL);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - VK_NUMPAD0 + IDC_BUTTON_0), 0);
+		}
+		//ÌÎ¨ 
+		if (GetKeyState(VK_SHIFT) > 0 && wParam == VK_OEM_PLUS)
+		{
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, FALSE, 0);
+			VK_SHIFT == 0;
+		}
+		if (GetKeyState(VK_SHIFT) < 0 && wParam == VK_OEM_PLUS)
+		{
+			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, FALSE, 0);
+		}
+		//ÌÎ¨ 
+		switch (wParam)
+		{
+		case VK_OEM_MINUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, FALSE, 0); break;
+		case VK_ESCAPE:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_CLR), BM_SETSTATE, FALSE, 0); break;
+		case VK_BACK:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_BSP), BM_SETSTATE, FALSE, 0); break;
+		case VK_OEM_2:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_SLASH), BM_SETSTATE, FALSE, 0); break;
+		case VK_OEM_PERIOD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, FALSE, 0); break;
+		case VK_MULTIPLY:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, FALSE, 0); break;
+		case VK_ADD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, FALSE, 0); break;
+		case VK_SUBTRACT:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, FALSE, 0); break;
+		case VK_DIVIDE:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_SLASH), BM_SETSTATE, FALSE, 0); break;
+		case VK_DELETE:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, FALSE, 0); break;
 
 		}
-
 		break;
 
 	case WM_DESTROY:
