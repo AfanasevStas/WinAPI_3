@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #undef UNICODE
 #include<Windows.h>
 #include<cstdio>
@@ -226,7 +226,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SendMessage(GetDlgItem(hwnd, wParam - VK_NUMPAD0 + IDC_BUTTON_0), BM_SETSTATE, TRUE, NULL);
 		}
-		//�Ψ 
+		//МОЁ 
 		if (GetKeyState(VK_SHIFT) > 0 && wParam == VK_OEM_PLUS)
 		{
 			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, TRUE, 0);
@@ -238,7 +238,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_OEM_MINUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
-		//�Ψ 
+		//МОЁ 
 		case VK_ESCAPE:
 		{
 			CHAR sz_display[MAX_PATH] = {};
@@ -294,7 +294,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(GetDlgItem(hwnd, wParam - VK_NUMPAD0 + IDC_BUTTON_0), BM_SETSTATE, FALSE, NULL);
 			SendMessage(hwnd, WM_COMMAND, LOWORD(wParam - VK_NUMPAD0 + IDC_BUTTON_0), 0);
 		}
-		//�Ψ 
+		//МОЁ 
 		if (GetKeyState(VK_SHIFT) > 0 && wParam == VK_OEM_PLUS)
 		{
 			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, FALSE, 0);
@@ -304,7 +304,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, FALSE, 0);
 		}
-		//�Ψ 
+		//МОЁ 
 		switch (wParam)
 		{
 		case VK_OEM_MINUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, FALSE, 0); break;
