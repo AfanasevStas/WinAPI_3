@@ -26,6 +26,8 @@ CONST CHAR g_OPERATION[] = "+-*/";
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+void Calc() {};
+
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
 	WNDCLASSEX wClass;
@@ -184,13 +186,14 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 	}
 	break;
+	break;
 	case WM_COMMAND:
 	{
 		static DOUBLE a = DBL_MIN, b = DBL_MIN;
 		static INT operation = 0;
 		static BOOL input = FALSE;
 		static BOOL input_operation = FALSE;
-
+		static INT check = 0;
 
 		CHAR sz_display[MAX_PATH] = {};
 		CHAR sz_digit[2] = {};
@@ -234,16 +237,43 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		if (LOWORD(wParam) >= IDC_BUTTON_PLUS && LOWORD(wParam) <= IDC_BUTTON_SLASH)
 		{
-			if (input)
+			//ÌÎ¨
+			if (check > 0)
 			{
+				check = 0;
+				input_operation = TRUE;
 				(a == DBL_MIN ? a : b) = atof(sz_display);
-				input = false;
+				switch (operation)
+				{
+				case IDC_BUTTON_PLUS:  a += b; break;
+				case IDC_BUTTON_MINUS: a -= b; break;
+				case IDC_BUTTON_ASTER: a *= b; break;
+				case IDC_BUTTON_SLASH: a /= b; break;
+				}
+				operation = LOWORD(wParam);
+				input_operation = FALSE;
+				if (a != DBL_MIN)
+				{
+					sprintf(sz_display, "%g", a);
+					SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
+				}
 			}
-			operation = LOWORD(wParam);
-			input_operation = TRUE;
+			if (check == 0)
+			{
+				check++;
+				if (input)
+				{
+					(a == DBL_MIN ? a : b) = atof(sz_display);
+					input = false;
+				}
+				operation = LOWORD(wParam);
+				input_operation = TRUE;
+			}
+			//ÌÎ¨
 		}
 		if (LOWORD(wParam) == IDC_BUTTON_EQUAL)
 		{
+			check = 0;
 			if (input)
 			{
 				(a == DBL_MIN ? a : b) = atof(sz_display);

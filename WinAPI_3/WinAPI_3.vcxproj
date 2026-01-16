@@ -134,6 +134,7 @@
     <ResourceCompile Include="Resource1.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="icon2.ico" />
     <Image Include="list-symbol-of-three-items-with-dots_icon-icons.com_72994.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
