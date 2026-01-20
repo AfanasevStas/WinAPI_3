@@ -199,6 +199,18 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetSkin(hwnd, "square_blue");
 	}
 	break;
+	case WM_CTLCOLOREDIT:
+	{
+		HDC hdc = (HDC)wParam;
+		SetBkMode(hdc, OPAQUE);
+		SetBkColor(hdc, RGB(0,0,100));
+		SetTextColor(hdc, RGB(200,200,200));
+		HBRUSH hBackground = CreateSolidBrush(RGB(0, 0, 200));
+		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
+		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+		return (LRESULT)hBackground;
+	}
+	break;
 	case WM_COMMAND:
 	{
 		static DOUBLE a = DBL_MIN, b = DBL_MIN;
