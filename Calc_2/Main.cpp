@@ -25,6 +25,7 @@ CONST CHAR g_OPERATION[] = "+-*/";
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -75,6 +76,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 }
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -86,7 +88,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HWND hEdit = CreateWindowEx
 		(
 			NULL, "Edit", "0",
-			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_RIGHT,
+			WS_CHILD | WS_VISIBLE | WS_BORDER | ES_RIGHT | BS_BITMAP,
 			g_i_START_X, g_i_START_Y,
 			g_i_DISPLAY_WIDTH, g_i_DISPLAY_HEIGTH,
 			hwnd,
@@ -103,7 +105,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				CreateWindowEx
 				(
 					NULL, "Button", sz_digit,
-					WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+					WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 					BUTTON_X_POSITION(j), BUTTON_Y_POSITION(2 - i / 3),
 					g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 					hwnd,
@@ -136,7 +138,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", ".",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 			BUTTON_X_POSITION(2), BUTTON_Y_POSITION(3),
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 			hwnd,
@@ -151,7 +153,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			CreateWindowEx
 			(
 				NULL, "Button", sz_operation,
-				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 				BUTTON_X_POSITION(3), BUTTON_Y_POSITION(i),
 				g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 				hwnd,
@@ -163,7 +165,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "<--",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 			BUTTON_X_POSITION(4), BUTTON_Y_POSITION(0),
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 			hwnd,
@@ -174,7 +176,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "C",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 			BUTTON_X_POSITION(4), BUTTON_Y_POSITION(1),
 			g_i_BUTTON_SIZE, g_i_BUTTON_SIZE,
 			hwnd,
@@ -185,7 +187,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx
 		(
 			NULL, "Button", "=",
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
 			BUTTON_X_POSITION(4), BUTTON_Y_POSITION(2),
 			g_i_BUTTON_SIZE, g_i_DOUBLE_BUTTON_SIZE,
 			hwnd,
@@ -193,6 +195,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
+		SetSkin(hwnd, "square_blue");
 	}
 	break;
 	case WM_COMMAND:
@@ -428,4 +431,45 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	default: return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 	return FALSE;
+}
+VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[])
+{
+	CONST CHAR* sz_NAMES[] =
+	{
+		"button_0",
+		"button_1",
+		"button_2",
+		"button_3",
+		"button_4",
+		"button_5",
+		"button_6",
+		"button_7",
+		"button_8",
+		"button_9",
+		"button_point",
+		"button_plus",
+		"button_minus",
+		"button_aster",
+		"button_slash",
+		"button_bsp",
+		"button_clr",
+		"button_equal",
+	};
+	for(int i = 0; i < 18; i++)
+	{
+		HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_0 + i);
+		CHAR sz_filename[MAX_PATH] = {};
+		sprintf(sz_filename, "ButtonsBMP\\%s\\%s.bmp", sz_skin, sz_NAMES[i]);
+		//sprintf(sz_filename, "ButtonsBMP\\%s\\button_%i.bmp", sz_skin, i);
+		HBITMAP bmpButton = (HBITMAP)LoadImage
+		(
+			GetModuleHandle(NULL),
+			sz_filename,
+			IMAGE_BITMAP,
+			i > 0 ? g_i_BUTTON_SIZE : g_i_DOUBLE_BUTTON_SIZE,
+			i < 17 ? g_i_BUTTON_SIZE : g_i_DOUBLE_BUTTON_SIZE,
+			LR_LOADFROMFILE
+		);
+		SendMessage(hButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bmpButton);
+	}
 }
