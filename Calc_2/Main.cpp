@@ -22,6 +22,7 @@
 #define g_i_WINDOW_HEIGTH             g_i_DISPLAY_HEIGTH + g_i_START_Y * 2 + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4 + 38
 
 CONST CHAR g_OPERATION[] = "+-*/";
+CONST CHAR* g_SKINS[] = { "metal_mistral", "square_blue" };
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -422,6 +423,59 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		break;
 
+	case WM_CONTEXTMENU:
+	{
+		HMENU hMenu = CreatePopupMenu();
+		InsertMenu
+		(
+			hMenu,
+			0,
+			MF_BYPOSITION | MF_STRING,
+			IDR_EXIT,
+			"Exit"
+		);
+		InsertMenu
+		(
+			hMenu,
+			0,
+			MF_BYPOSITION | MF_SEPARATOR,
+			NULL,
+			NULL
+		);
+		InsertMenu
+		(
+			hMenu,
+			0,
+			MF_BYPOSITION | MF_STRING,
+			IDR_METAL_MISTRAL,
+			"Metal mistral"
+		);
+		InsertMenu
+		(
+			hMenu,
+			0,
+			MF_BYPOSITION | MF_STRING,
+			IDR_SQURE_BLUE,
+			"Square blue"
+		);
+		INT item = TrackPopupMenuEx
+		(
+			hMenu,
+			TPM_RIGHTALIGN | TPM_BOTTOMALIGN | TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_HORNEGANIMATION | TPM_VERNEGANIMATION,
+			LOWORD(lParam), HIWORD(lParam),
+			(HWND)wParam,
+			NULL
+		);
+		switch (item)
+		{
+		case IDR_SQURE_BLUE: SetSkin(hwnd, "square_blue"); break;
+		case IDR_METAL_MISTRAL: SetSkin(hwnd, "metal_mistral"); break;
+		case IDR_EXIT: SendMessage(hwnd, WM_CLOSE, 0, 0);
+
+		}
+		DestroyMenu(hMenu);
+	}
+	break;
 	case WM_DESTROY:
 		FreeConsole();
 		PostQuitMessage(0);
