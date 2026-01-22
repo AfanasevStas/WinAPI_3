@@ -23,6 +23,7 @@
 
 CONST CHAR g_OPERATION[] = "+-*/";
 CONST CHAR* g_SKINS[] = { "metal_mistral", "square_blue" };
+BOOL Color_gray = FALSE;
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -77,7 +78,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 }
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -201,15 +201,40 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_CTLCOLOREDIT:
 	{
-		HDC hdc = (HDC)wParam;
-		SetBkMode(hdc, OPAQUE);
-		SetBkColor(hdc, RGB(0,0,100));
-		SetTextColor(hdc, RGB(200,200,200));
-		HBRUSH hBackground = CreateSolidBrush(RGB(0, 0, 200));
-		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
-		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
-		return (LRESULT)hBackground;
+		if (Color_gray == FALSE)
+		{
+			HDC hdc = (HDC)wParam;
+			SetBkMode(hdc, OPAQUE);
+			SetBkColor(hdc, RGB(0, 0, 100));
+			SetTextColor(hdc, RGB(200, 200, 200));
+			HBRUSH hBackground = CreateSolidBrush(RGB(0, 0, 200));
+			SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
+			SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+			return (LRESULT)hBackground;
+		}
+		if (Color_gray == TRUE)
+		{
+			HDC hdc = (HDC)wParam;
+			SetBkMode(hdc, OPAQUE);
+			SetBkColor(hdc, RGB(150, 150, 150));
+			SetTextColor(hdc, RGB(200, 200, 200));
+			HBRUSH hBackground = CreateSolidBrush(RGB(100, 100, 100));
+			SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
+			SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+			return (LRESULT)hBackground;
+		}
 	}
+	break;
+	//case WM_PAINT:
+	//{
+	//	HDC hdc = (HDC)wParam;
+	//		SetBkMode(hdc, OPAQUE);
+	//		SetBkColor(hdc, RGB(150, 150, 150));
+	//		SetTextColor(hdc, RGB(200, 200, 200));
+	//		HBRUSH hBackground = CreateSolidBrush(RGB(100, 100, 100));
+	//		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
+	//		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+	//}
 	break;
 	case WM_COMMAND:
 	{
@@ -480,11 +505,37 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 		switch (item)
 		{
-		case IDR_SQURE_BLUE: SetSkin(hwnd, "square_blue"); break;
-		case IDR_METAL_MISTRAL: SetSkin(hwnd, "metal_mistral"); break;
+		case IDR_SQURE_BLUE:
+		{
+			SetSkin(hwnd, "square_blue");
+			Color_gray = FALSE;
+		}
+		break;
+		case IDR_METAL_MISTRAL:
+		{
+			SetSkin(hwnd, "metal_mistral");
+			//HDC hdc = (HDC)wParam;
+			//SetBkMode(hdc, OPAQUE);
+			//SetBkColor(hdc, RGB(150, 150, 150));
+			//SetTextColor(hdc, RGB(200, 200, 200));
+			//HBRUSH hBackground = CreateSolidBrush(RGB(100, 100, 100));
+			//SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
+			//SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
+			Color_gray = TRUE;
+
+			//HBRUSH clr;
+			//clr = CreateSolidBrush(RGB(150, 150, 150));
+			//SetClassLong(hwnd, GCLP_HBRBACKGROUND, (long)clr);
+			//RedrawWindow(hwnd, 0, 0, RDW_INVALIDATE | RDW_ERASE);
+		}
+		break;
 		case IDR_EXIT: SendMessage(hwnd, WM_CLOSE, 0, 0);
 
 		}
+		HWND hEdit = GetDlgItem(hwnd, IDC_DISPLAY);
+		HDC hdc = GetDC(hwnd);
+		SendMessage(hwnd, WM_CTLCOLOREDIT, (WPARAM)hdc, 0);
+		ReleaseDC(hEdit, hdc);
 		DestroyMenu(hMenu);
 	}
 	break;
