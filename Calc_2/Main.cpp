@@ -11,7 +11,9 @@
 #define g_i_START_X                   10
 #define g_i_START_Y                   10
 #define g_i_DISPLAY_WIDTH             g_i_BUTTON_SIZE * 5 + g_i_INTERVAL * 4
-#define g_i_DISPLAY_HEIGTH            22
+#define g_i_DISPLAY_HEIGTH            g_i_BUTTON_SIZE
+#define g_i_FONT_HEIGHT               (g_i_DISPLAY_HEIGTH - 2)
+#define g_i_FONT_WIDTH                g_i_DISPLAY_HEIGTH / 2.5
 #define g_i_BUTTON_START_X            g_i_START_X
 #define g_i_BUTTON_START_Y            g_i_START_Y +  g_i_DISPLAY_HEIGTH + g_i_INTERVAL
 
@@ -85,6 +87,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static Skin skin = Skin::Square_blue;
+	static HFONT hFont = NULL;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -104,6 +107,23 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
+		AddFontResourceEx("Fonts\\digital-7 (mono).ttf", FR_PRIVATE,0);
+		hFont = CreateFont
+		(
+			g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
+			0,0,500,
+			FALSE, FALSE, FALSE,
+			DEFAULT_CHARSET,
+			OUT_DEFAULT_PRECIS,
+			CLIP_DEFAULT_PRECIS,
+			ANTIALIASED_QUALITY,
+			DEFAULT_PITCH,
+			"Digital-7 Mono"
+			/*"DS-Digital"*/
+		);
+		SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, TRUE);
+		//DeleteObject(hFont);
+		//hFont = NULL;
 		CHAR sz_digit[2] = {};
 		for (int i = 6; i >= 0; i -= 3)
 		{
@@ -215,7 +235,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//HBRUSH hBackground = CreateSolidBrush(RGB(0, 0, 200));
 		HBRUSH hBackground = CreateSolidBrush(g_COLORS[skin][Color::MainBackground]);
 		SetBkColor(hdc, g_COLORS[skin][Color::DisplayBackground]);
-		SetBkColor(hdc, g_COLORS[skin][Color::Font]);
+		SetTextColor(hdc, g_COLORS[skin][Color::Font]);
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
 		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
 		return (LRESULT)hBackground;
@@ -507,6 +527,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		FreeConsole();
 		PostQuitMessage(0);
+		DeleteObject(hFont);
 		break;
 	case WM_CLOSE:
 		DestroyWindow(hwnd);
