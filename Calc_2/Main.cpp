@@ -22,7 +22,14 @@
 #define g_i_WINDOW_HEIGTH             g_i_DISPLAY_HEIGTH + g_i_START_Y * 2 + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4 + 38
 
 CONST CHAR g_OPERATION[] = "+-*/";
-CONST CHAR* g_SKINS[] = { "metal_mistral", "square_blue" };
+enum Skin { Square_blue, Metal_mistral};
+enum Color { MainBackground, DisplayBackground, Font};
+CONST CHAR* g_SKINS[] = { "square_blue", "metal_mistral" };
+CONST COLORREF g_COLORS[2][3] =
+{
+	{RGB(0,0,200), RGB(0,0,100), RGB(200,200,200)},
+	{RGB(100,100,100), RGB(50,50,50), RGB(50,200,50)}
+};
 
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -77,7 +84,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, IN
 }
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
+	static Skin skin = Skin::Square_blue;
 	switch (uMsg)
 	{
 	case WM_CREATE:
@@ -202,10 +209,13 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_CTLCOLOREDIT:
 	{
 		HDC hdc = (HDC)wParam;
-		SetBkMode(hdc, OPAQUE);
-		SetBkColor(hdc, RGB(0,0,100));
-		SetTextColor(hdc, RGB(200,200,200));
-		HBRUSH hBackground = CreateSolidBrush(RGB(0, 0, 200));
+		//SetBkMode(hdc, OPAQUE);
+		//SetBkColor(hdc, RGB(0,0,100));
+		//SetTextColor(hdc, RGB(200,200,200));
+		//HBRUSH hBackground = CreateSolidBrush(RGB(0, 0, 200));
+		HBRUSH hBackground = CreateSolidBrush(g_COLORS[skin][Color::MainBackground]);
+		SetBkColor(hdc, g_COLORS[skin][Color::DisplayBackground]);
+		SetBkColor(hdc, g_COLORS[skin][Color::Font]);
 		SetClassLongPtr(hwnd, GCLP_HBRBACKGROUND, (LONG)hBackground);
 		SendMessage(hwnd, WM_ERASEBKGND, wParam, 0);
 		return (LRESULT)hBackground;
@@ -486,6 +496,12 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		}
 		DestroyMenu(hMenu);
+		skin = Skin(item - IDR_SQURE_BLUE);
+		HWND hEditDisplay = GetDlgItem(hwnd, IDC_DISPLAY);
+		HDC hdc = GetDC(hwnd);
+		SendMessage(hwnd, WM_CTLCOLOREDIT, (WPARAM)hdc, (LPARAM)hEditDisplay);
+		ReleaseDC(hwnd, hdc);
+		SetFocus(hEditDisplay);
 	}
 	break;
 	case WM_DESTROY:
