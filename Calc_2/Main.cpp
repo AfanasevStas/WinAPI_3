@@ -5,6 +5,7 @@
 #include<iostream>
 #include"resource.h"
 
+
 #define g_i_BUTTON_SIZE               50
 #define g_i_INTERVAL                   2
 #define g_i_DOUBLE_BUTTON_SIZE        g_i_BUTTON_SIZE * 2 + g_i_INTERVAL
@@ -36,6 +37,7 @@ CONST COLORREF g_COLORS[2][3] =
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[]);
+VOID SetSkinFromDLL(HWND hwnd, CONST CHAR sz_skin[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -223,7 +225,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
-		SetSkin(hwnd, "square_blue");
+		SetSkinFromDLL(hwnd, "square_blue");
 	}
 	break;
 	case WM_CTLCOLOREDIT:
@@ -510,8 +512,8 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 		switch (item)
 		{
-		case IDR_SQURE_BLUE: SetSkin(hwnd, "square_blue"); break;
-		case IDR_METAL_MISTRAL: SetSkin(hwnd, "metal_mistral"); break;
+		case IDR_SQURE_BLUE: SetSkinFromDLL(hwnd, "square_blue"); break;
+		case IDR_METAL_MISTRAL: SetSkinFromDLL(hwnd, "metal_mistral"); break;
 		case IDR_EXIT: SendMessage(hwnd, WM_CLOSE, 0, 0);
 
 		}
@@ -575,4 +577,22 @@ VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[])
 		);
 		SendMessage(hButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bmpButton);
 	}
+}
+VOID SetSkinFromDLL(HWND hwnd, CONST CHAR sz_skin[])
+{
+	HINSTANCE hSkin = LoadLibrary(sz_skin);
+	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
+	{
+		HBITMAP bmpButton = (HBITMAP)LoadImage
+		(
+			hSkin,
+			MAKEINTRESOURCE(i),
+			IMAGE_BITMAP,
+			i > IDC_BUTTON_0 ? g_i_BUTTON_SIZE : g_i_DOUBLE_BUTTON_SIZE,
+			i < IDC_BUTTON_EQUAL ? g_i_BUTTON_SIZE : g_i_DOUBLE_BUTTON_SIZE,
+			LR_SHARED
+		);
+		SendMessage(GetDlgItem(hwnd, i), BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bmpButton);
+	}
+	FreeLibrary(hSkin);
 }
