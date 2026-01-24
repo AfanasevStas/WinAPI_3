@@ -5,6 +5,7 @@
 #include<iostream>
 #include"resource.h"
 
+
 #define g_i_BUTTON_SIZE               50
 #define g_i_INTERVAL                   2
 #define g_i_DOUBLE_BUTTON_SIZE        g_i_BUTTON_SIZE * 2 + g_i_INTERVAL
@@ -24,8 +25,8 @@
 #define g_i_WINDOW_HEIGTH             g_i_DISPLAY_HEIGTH + g_i_START_Y * 2 + (g_i_BUTTON_SIZE + g_i_INTERVAL) * 4 + 38
 
 CONST CHAR g_OPERATION[] = "+-*/";
-enum Skin { Square_blue, Metal_mistral};
-enum Color { MainBackground, DisplayBackground, Font};
+enum Skin { Square_blue, Metal_mistral };
+enum Color { MainBackground, DisplayBackground, Font };
 CONST CHAR* g_SKINS[] = { "square_blue", "metal_mistral" };
 CONST COLORREF g_COLORS[2][3] =
 {
@@ -36,6 +37,7 @@ CONST COLORREF g_COLORS[2][3] =
 CONST CHAR g_sz_WINDOW_CLASS[] = "Calc PV_522";
 LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[]);
+VOID SetSkinFromDLL(HWND hwnd, CONST CHAR sz_skin[]);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -107,11 +109,11 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
-		AddFontResourceEx("Fonts\\digital-7 (mono).ttf", FR_PRIVATE,0);
+		AddFontResourceEx("Fonts\\digital-7 (mono).ttf", FR_PRIVATE, 0);
 		hFont = CreateFont
 		(
 			g_i_FONT_HEIGHT, g_i_FONT_WIDTH,
-			0,0,500,
+			0, 0, 500,
 			FALSE, FALSE, FALSE,
 			DEFAULT_CHARSET,
 			OUT_DEFAULT_PRECIS,
@@ -223,7 +225,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GetModuleHandle(NULL),
 			NULL
 		);
-		SetSkin(hwnd, "square_blue");
+		SetSkinFromDLL(hwnd, "square_blue");
 	}
 	break;
 	case WM_CTLCOLOREDIT:
@@ -280,7 +282,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (LOWORD(wParam) == IDC_BUTTON_BSP)
 		{
 			sz_display[strlen(sz_display) - 1] = 0;
-			if(sz_display[0] == 0)sz_display[0] = '0';
+			if (sz_display[0] == 0)sz_display[0] = '0';
 			SendMessage(hEditDisplay, WM_SETTEXT, 0, (LPARAM)sz_display);
 		}
 		if (LOWORD(wParam) == IDC_BUTTON_CLR)
@@ -306,7 +308,7 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				(a == DBL_MIN ? a : b) = atof(sz_display);
 				input = false;
 			}
-			if(!input_operation && !executed)SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
+			if (!input_operation && !executed)SendMessage(hwnd, WM_COMMAND, LOWORD(IDC_BUTTON_EQUAL), 0);
 			operation = LOWORD(wParam);
 			input_operation = TRUE;
 		}
@@ -371,8 +373,8 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		switch (wParam)
 		{
-		//case VK_ADD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0); break;
-		//case VK_OEM_PLUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0); break;
+			//case VK_ADD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0); break;
+			//case VK_OEM_PLUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_PLUS), BM_SETSTATE, TRUE, 0); break;
 		case VK_OEM_MINUS:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
 		case VK_SUBTRACT:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_MINUS), BM_SETSTATE, TRUE, 0); break;
 		case VK_OEM_2:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_SLASH), BM_SETSTATE, TRUE, 0); break;
@@ -380,10 +382,10 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case VK_MULTIPLY:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_ASTER), BM_SETSTATE, TRUE, 0); break;
 		case VK_OEM_PERIOD:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, TRUE, 0); break;
 		case VK_DECIMAL:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_POINT), BM_SETSTATE, TRUE, 0); break;
-		
+
 		case VK_BACK:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_BSP), BM_SETSTATE, TRUE, 0); break;
 		case VK_ESCAPE:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_CLR), BM_SETSTATE, TRUE, 0); break;
-		//case VK_RETURN:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, TRUE, 0); break;
+			//case VK_RETURN:SendMessage(GetDlgItem(hwnd, IDC_BUTTON_EQUAL), BM_SETSTATE, TRUE, 0); break;
 		}
 	}
 	break;
@@ -510,8 +512,8 @@ LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		);
 		switch (item)
 		{
-		case IDR_SQURE_BLUE: SetSkin(hwnd, "square_blue"); break;
-		case IDR_METAL_MISTRAL: SetSkin(hwnd, "metal_mistral"); break;
+		case IDR_SQURE_BLUE: SetSkinFromDLL(hwnd, "square_blue"); break;
+		case IDR_METAL_MISTRAL: SetSkinFromDLL(hwnd, "metal_mistral"); break;
 		case IDR_EXIT: SendMessage(hwnd, WM_CLOSE, 0, 0);
 
 		}
@@ -558,7 +560,7 @@ VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[])
 		"button_clr",
 		"button_equal",
 	};
-	for(int i = 0; i < 18; i++)
+	for (int i = 0; i < 18; i++)
 	{
 		HWND hButton = GetDlgItem(hwnd, IDC_BUTTON_0 + i);
 		CHAR sz_filename[MAX_PATH] = {};
@@ -575,4 +577,22 @@ VOID SetSkin(HWND hwnd, CONST CHAR sz_skin[])
 		);
 		SendMessage(hButton, BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bmpButton);
 	}
+}
+VOID SetSkinFromDLL(HWND hwnd, CONST CHAR sz_skin[])
+{
+	HINSTANCE hSkin = LoadLibrary(sz_skin);
+	for (int i = IDC_BUTTON_0; i <= IDC_BUTTON_EQUAL; i++)
+	{
+		HBITMAP bmpButton = (HBITMAP)LoadImage
+		(
+			hSkin,
+			MAKEINTRESOURCE(i),
+			IMAGE_BITMAP,
+			i > IDC_BUTTON_0 ? g_i_BUTTON_SIZE : g_i_DOUBLE_BUTTON_SIZE,
+			i < IDC_BUTTON_EQUAL ? g_i_BUTTON_SIZE : g_i_DOUBLE_BUTTON_SIZE,
+			LR_SHARED
+		);
+		SendMessage(GetDlgItem(hwnd, i), BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)bmpButton);
+	}
+	FreeLibrary(hSkin);
 }
